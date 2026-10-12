@@ -1,6 +1,6 @@
 # AvandWP — Architecture
 
-**Version:** 2.0.0 · **Database schema:** 1002 · **Document date:** 2026-10-12
+**Version:** 2.0.1 · **Database schema:** 1002 · **Document date:** 2026-10-12
 
 This document describes how the plugin is put together *as it exists in this
 repository*. Every claim below was read out of the source; nothing is aspirational.

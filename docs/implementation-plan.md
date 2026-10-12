@@ -1,6 +1,6 @@
 # AvandWP — Implementation Plan (as executed)
 
-**Version:** 2.0.0 · **Date:** 2026-10-12
+**Version:** 2.0.1 · **Date:** 2026-10-12
 **Baseline:** `reference/avandwp-v1.0.0-baseline.zip` (109,367 bytes, immutable)
 
 This is not a roadmap written before the work: it is the plan as actually
@@ -131,7 +131,7 @@ Result: **125 tests, 0 failures**, run after every change.
 | `docs/seo-scoring-model.md` | the 37 criteria, scoring arithmetic, what the scores do not claim |
 | `docs/compatibility.md` | WordPress/PHP/hosting, SEO plugins, themes, providers |
 | `docs/testing-report.md` | reproduction commands, per-module status, deliberately unverified surfaces |
-| `CHANGELOG.md` | 1.0.0 → 2.0.0 |
+| `CHANGELOG.md` | 1.0.0 → 2.0.1 |
 | `docs/COMMERCIAL-LAUNCH-KIT.md` | positioning, pricing, comparison matrix |
 
 ---

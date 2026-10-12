@@ -3,7 +3,7 @@
  * Plugin Name:       آوند (AvandWP) — دستیار هوشمند محتوا، ووکامرس و پشتیبانی
  * Plugin URI:        https://github.com/Masoumiofficial/etehadyar-plu
  * Description:       بسته عملیاتی هوش مصنوعی برای وردپرس: استودیو تولید محتوا و رسانه، بهینه‌ساز محصولات ووکامرس، چت‌بات پاسخ‌گو متصل به پایگاه دانش و صندوق تیکت، و انتشار خودکار در تلگرام با پشتیبانی از سرویس‌های بین‌المللی و ریالی.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            تیم توسعه آوند (AvandWP)
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'AVANDWP_VERSION', '2.0.0' );
+define( 'AVANDWP_VERSION', '2.0.1' );
 define( 'AVANDWP_DB_VERSION', '1002' );
 define( 'AVANDWP_FILE', __FILE__ );
 define( 'AVANDWP_PATH', plugin_dir_path( __FILE__ ) );
