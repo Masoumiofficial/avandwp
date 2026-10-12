@@ -16,9 +16,9 @@ on:
   workflow_dispatch:
 
 env:
-  TAG: 2.0.0-alpha.1
-  EXPECTED_SHA256: d0e02703598e91882226e1f3286325e094de194c8c6580d17a1b646536a2f5b6
-  EXPECTED_BYTES: "896552"
+  TAG: 2.0.0
+  EXPECTED_SHA256: 7bce43e37982e8facf136c9f21ea4522a003157cf59a218e783b5120db45b871
+  EXPECTED_BYTES: "896504"
   EXPECTED_FILES: "55"
 
 permissions:
@@ -37,7 +37,7 @@ jobs:
       - name: Check out the tagged release source
         uses: actions/checkout@v4
         with:
-          ref: 2.0.0-alpha.1
+          ref: 2.0.0
           fetch-depth: 1
 
       - name: Assert the checkout is the expected commit
@@ -45,8 +45,8 @@ jobs:
           set -euo pipefail
           HEAD_SHA="$(git rev-parse HEAD)"
           echo "Checked out: $HEAD_SHA"
-          if [ "$HEAD_SHA" != "9118588badb7507492662b105e1f02565ec5379d" ]; then
-            echo "::error::tag $TAG no longer points at 9118588; refusing to build"
+          if [ "$HEAD_SHA" != "c3492577d8084cb6feff090fcb9a34dca99a057e" ]; then
+            echo "::error::tag $TAG no longer points at c349257; refusing to build"
             exit 1
           fi
 
