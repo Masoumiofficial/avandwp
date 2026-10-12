@@ -1,0 +1,960 @@
+/**
+ * AvandWP Admin Design System (`assets/css/admin.css`).
+ *
+ * RTL-first, WCAG AA accessible, 8px spatial scale, modern WordPress-native UI.
+ */
+
+:root {
+	--avand-primary: #2563EB;
+	--avand-primary-hover: #1D4ED8;
+	--avand-primary-soft: #EFF6FF;
+	--avand-accent: #0D9488;
+	--avand-surface-bg: #F8FAFC;
+	--avand-surface-card: #FFFFFF;
+	--avand-border: #E2E8F0;
+	--avand-text-primary: #0F172A;
+	--avand-text-secondary: #475569;
+	--avand-text-muted: #64748B;
+	--avand-success-bg: #F0FDF4;
+	--avand-success-text: #15803D;
+	--avand-warning-bg: #FFFBEB;
+	--avand-warning-text: #B45309;
+	--avand-danger-bg: #FEF2F2;
+	--avand-danger-text: #B91C1C;
+	--avand-info-bg: #EFF6FF;
+	--avand-info-text: #1D4ED8;
+	--avand-radius-card: 12px;
+	--avand-radius-control: 8px;
+}
+
+.avandwp-wrap {
+	max-width: 1280px;
+	margin: 16px auto 40px;
+	font-family: Tahoma, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	color: var(--avand-text-primary);
+	box-sizing: border-box;
+}
+
+.avandwp-wrap *,
+.avandwp-wrap *::before,
+.avandwp-wrap *::after {
+	box-sizing: border-box;
+}
+
+/* Header & Navigation */
+.avandwp-topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 16px;
+	background: var(--avand-surface-card);
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-card);
+	padding: 16px 24px;
+	margin-bottom: 16px;
+}
+
+.avandwp-brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.avandwp-brand-logo {
+	width: 44px;
+	height: 44px;
+	border-radius: 10px;
+	background: var(--avand-primary-soft);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.avandwp-brand-title {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--avand-text-primary);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.avandwp-brand-subtitle {
+	margin: 4px 0 0;
+	font-size: 13px;
+	color: var(--avand-text-secondary);
+}
+
+.avandwp-version-badge {
+	font-size: 11px;
+	font-weight: 600;
+	background: var(--avand-primary-soft);
+	color: var(--avand-primary);
+	padding: 2px 8px;
+	border-radius: 999px;
+}
+
+.avandwp-main-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 24px;
+}
+
+.avandwp-nav-link {
+	text-decoration: none;
+	color: var(--avand-text-secondary);
+	background: var(--avand-surface-card);
+	border: 1px solid var(--avand-border);
+	padding: 10px 16px;
+	border-radius: var(--avand-radius-control);
+	font-size: 13px;
+	font-weight: 600;
+	transition: all 0.15s ease;
+}
+
+.avandwp-nav-link:hover {
+	color: var(--avand-primary);
+	border-color: var(--avand-primary);
+}
+
+.avandwp-nav-link.is-active {
+	background: var(--avand-primary);
+	color: #FFFFFF;
+	border-color: var(--avand-primary);
+}
+
+/* Grids & Cards */
+.avandwp-grid {
+	display: grid;
+	gap: 16px;
+	margin-bottom: 20px;
+}
+
+.avandwp-grid-2 {
+	grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+}
+
+.avandwp-grid-3 {
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.avandwp-grid-4 {
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.avandwp-card {
+	background: var(--avand-surface-card);
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-card);
+	padding: 24px;
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.avandwp-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 16px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--avand-border);
+}
+
+.avandwp-card-header h2 {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--avand-text-primary);
+}
+
+/* KPI Cards */
+.avandwp-kpi-card {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.avandwp-kpi-label {
+	font-size: 13px;
+	color: var(--avand-text-secondary);
+	font-weight: 600;
+}
+
+.avandwp-kpi-value {
+	font-size: 28px;
+	font-weight: 800;
+	color: var(--avand-text-primary);
+	line-height: 1.2;
+}
+
+.avandwp-kpi-meta {
+	font-size: 12px;
+	color: var(--avand-text-muted);
+}
+
+/* Onboarding Steps */
+.avandwp-step-box {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 16px;
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	background: var(--avand-surface-bg);
+}
+
+.avandwp-step-box.is-done {
+	border-color: #BBF7D0;
+	background: var(--avand-success-bg);
+}
+
+.avandwp-step-num {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: var(--avand-primary);
+	color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.avandwp-step-box.is-done .avandwp-step-num {
+	background: var(--avand-success-text);
+}
+
+.avandwp-step-box h3 {
+	margin: 0 0 6px;
+	font-size: 14px;
+}
+
+.avandwp-step-box p {
+	margin: 0 0 12px;
+	font-size: 12px;
+	color: var(--avand-text-secondary);
+}
+
+/* Tabs */
+.avandwp-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 16px;
+	border-bottom: 1px solid var(--avand-border);
+	padding-bottom: 12px;
+}
+
+.avandwp-tab-btn {
+	background: var(--avand-surface-card);
+	border: 1px solid var(--avand-border);
+	color: var(--avand-text-secondary);
+	padding: 8px 16px;
+	border-radius: var(--avand-radius-control);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.avandwp-tab-btn.is-active {
+	background: var(--avand-primary-soft);
+	border-color: var(--avand-primary);
+	color: var(--avand-primary);
+}
+
+/* Forms & Controls */
+.avandwp-field {
+	margin-bottom: 16px;
+}
+
+.avandwp-field label {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 6px;
+	color: var(--avand-text-primary);
+}
+
+.avandwp-field input[type="text"],
+.avandwp-field input[type="url"],
+.avandwp-field input[type="number"],
+.avandwp-field select,
+.avandwp-field textarea {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #CBD5E1;
+	border-radius: var(--avand-radius-control);
+	font-size: 13px;
+	color: var(--avand-text-primary);
+	background: #FFFFFF;
+}
+
+.avandwp-checkbox-group {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 16px 0;
+	padding: 12px 16px;
+	background: var(--avand-surface-bg);
+	border-radius: var(--avand-radius-control);
+}
+
+.avandwp-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+/* Buttons */
+.avandwp-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 9px 18px;
+	border-radius: var(--avand-radius-control);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: none;
+	border: 1px solid transparent;
+	transition: all 0.15s ease;
+}
+
+.avandwp-btn-primary {
+	background: var(--avand-primary);
+	color: #FFFFFF;
+}
+
+.avandwp-btn-primary:hover {
+	background: var(--avand-primary-hover);
+	color: #FFFFFF;
+}
+
+.avandwp-btn-secondary {
+	background: #FFFFFF;
+	border-color: #CBD5E1;
+	color: var(--avand-text-primary);
+}
+
+.avandwp-btn-secondary:hover {
+	border-color: var(--avand-primary);
+	color: var(--avand-primary);
+}
+
+.avandwp-btn-sm {
+	padding: 6px 12px;
+	font-size: 12px;
+}
+
+.avandwp-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Badges */
+.avandwp-badge {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.avandwp-badge-success {
+	background: var(--avand-success-bg);
+	color: var(--avand-success-text);
+}
+
+.avandwp-badge-warning {
+	background: var(--avand-warning-bg);
+	color: var(--avand-warning-text);
+}
+
+.avandwp-badge-danger {
+	background: var(--avand-danger-bg);
+	color: var(--avand-danger-text);
+}
+
+.avandwp-badge-info {
+	background: var(--avand-info-bg);
+	color: var(--avand-info-text);
+}
+
+/* Tables & Empty States */
+.avandwp-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.avandwp-table th,
+.avandwp-table td {
+	padding: 12px;
+	border-bottom: 1px solid var(--avand-border);
+	text-align: right;
+	vertical-align: top;
+}
+
+.avandwp-table th {
+	background: var(--avand-surface-bg);
+	font-weight: 700;
+	color: var(--avand-text-secondary);
+}
+
+.avandwp-empty-state {
+	padding: 32px 20px;
+	text-align: center;
+	background: var(--avand-surface-bg);
+	border: 1px dashed #CBD5E1;
+	border-radius: var(--avand-radius-control);
+}
+
+.avandwp-empty-state p {
+	margin: 0 0 8px;
+	font-weight: 600;
+	color: var(--avand-text-primary);
+}
+
+.avandwp-text-muted {
+	color: var(--avand-text-muted);
+	font-size: 12px;
+}
+
+/* Advanced Collapsible */
+.avandwp-advanced-details {
+	margin: 16px 0;
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	padding: 12px 16px;
+	background: var(--avand-surface-bg);
+}
+
+.avandwp-advanced-details summary {
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 13px;
+	color: var(--avand-text-secondary);
+}
+
+.avandwp-advanced-body {
+	margin-top: 16px;
+}
+
+/* FAQ Rows */
+.avandwp-faq-row {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 12px;
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	margin-bottom: 12px;
+	background: var(--avand-surface-bg);
+}
+
+/* Toast Notification */
+.avandwp-toast {
+	position: fixed;
+	bottom: 24px;
+	left: 24px;
+	z-index: 99999;
+	padding: 12px 20px;
+	border-radius: var(--avand-radius-control);
+	background: var(--avand-text-primary);
+	color: #FFFFFF;
+	font-size: 13px;
+	font-weight: 600;
+	box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+}
+
+.avandwp-toast.is-error {
+	background: var(--avand-danger-text);
+}
+
+.avandwp-toast.is-success {
+	background: var(--avand-success-text);
+}
+
+/* ---------------------------------------------------------------------------
+ * Screens added in 2.0.0: quality lab, links, site audit, long-form studio and
+ * the Google integrations page.
+ *
+ * Every class here is one the PHP templates or admin.js actually emit, and the
+ * progress rules exist for one reason: a bar may only fill from a percentage the
+ * server measured. `is-indeterminate` is the honest "unknown" state and is
+ * animated as movement, not as progress.
+ * ------------------------------------------------------------------------ */
+
+/* Tab panels.
+ *
+ * `[hidden]` must win over `display: block`: if it does not, every tab is
+ * visible at once and the tab buttons appear broken. */
+.avandwp-tab-panel {
+	display: block;
+}
+
+.avandwp-tab-panel[hidden] {
+	display: none !important;
+}
+
+#tab-longform .avandwp-form {
+	margin-top: 8px;
+}
+
+#tab-longform .avandwp-grid-2 {
+	align-items: start;
+}
+
+/* Inline help text */
+.avandwp-help {
+	margin: 6px 0 14px;
+	font-size: 12px;
+	line-height: 1.9;
+	color: var(--avand-text-muted);
+}
+
+.avandwp-help code {
+	background: var(--avand-surface-bg);
+	border: 1px solid var(--avand-border);
+	border-radius: 4px;
+	padding: 1px 5px;
+	direction: ltr;
+	display: inline-block;
+}
+
+/* Forms */
+.avandwp-form {
+	display: block;
+}
+
+.avandwp-form-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin-top: 16px;
+	padding-top: 16px;
+	border-top: 1px solid var(--avand-border);
+}
+
+.avandwp-field-inline {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 8px 0;
+}
+
+.avandwp-field-inline label {
+	font-size: 13px;
+	font-weight: 600;
+	margin: 0;
+}
+
+.avandwp-input {
+	padding: 7px 10px;
+	border: 1px solid #CBD5E1;
+	border-radius: var(--avand-radius-control);
+	font-size: 13px;
+	background: #FFFFFF;
+	color: var(--avand-text-primary);
+	min-width: 200px;
+}
+
+.avandwp-input-sm {
+	min-width: 110px;
+	max-width: 140px;
+}
+
+.avandwp-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 12px 0;
+}
+
+.avandwp-buttons .button.avandwp-google-load {
+	height: auto;
+}
+
+/* Status tiles */
+.avandwp-status-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 12px;
+	margin: 16px 0;
+}
+
+.avandwp-status-tile {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 14px 16px;
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	background: var(--avand-surface-bg);
+}
+
+.avandwp-status-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--avand-text-secondary);
+}
+
+.avandwp-status-value {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--avand-text-primary);
+}
+
+.avandwp-status-value.is-good {
+	color: var(--avand-success-text);
+}
+
+.avandwp-status-value.is-blocked {
+	color: var(--avand-warning-text);
+}
+
+.avandwp-status-tile small {
+	font-size: 11px;
+	line-height: 1.8;
+	color: var(--avand-text-muted);
+}
+
+.avandwp-status-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+/* Notices: informational, cautionary and error states read differently. */
+.avandwp-notice {
+	border: 1px solid var(--avand-border);
+	border-right-width: 4px;
+	border-radius: var(--avand-radius-control);
+	padding: 12px 16px;
+	margin: 12px 0;
+	font-size: 13px;
+	line-height: 1.9;
+	background: var(--avand-surface-bg);
+}
+
+.avandwp-notice ul {
+	margin: 6px 0 6px 0;
+	padding-right: 20px;
+	list-style: disc;
+}
+
+.avandwp-notice-info {
+	background: var(--avand-info-bg);
+	border-color: #BFDBFE;
+	border-right-color: var(--avand-info-text);
+	color: var(--avand-info-text);
+}
+
+.avandwp-notice-warning {
+	background: var(--avand-warning-bg);
+	border-color: #FDE68A;
+	border-right-color: var(--avand-warning-text);
+	color: var(--avand-warning-text);
+}
+
+.avandwp-notice-error {
+	background: var(--avand-danger-bg);
+	border-color: #FECACA;
+	border-right-color: var(--avand-danger-text);
+	color: var(--avand-danger-text);
+}
+
+.avandwp-notice strong {
+	display: block;
+	margin-bottom: 4px;
+}
+
+/* Result blocks */
+.avandwp-result,
+.avandwp-result-container {
+	margin-top: 16px;
+}
+
+.avandwp-result:empty {
+	margin-top: 0;
+}
+
+.avandwp-result pre {
+	background: var(--avand-surface-bg);
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	padding: 12px;
+	overflow-x: auto;
+	font-size: 12px;
+	line-height: 1.7;
+}
+
+.avandwp-note {
+	font-size: 12px;
+	line-height: 1.9;
+	color: var(--avand-text-muted);
+	margin: 6px 0;
+}
+
+.avandwp-error {
+	font-size: 13px;
+	line-height: 1.9;
+	color: var(--avand-danger-text);
+	background: var(--avand-danger-bg);
+	border: 1px solid #FECACA;
+	border-radius: var(--avand-radius-control);
+	padding: 10px 14px;
+	margin: 8px 0;
+}
+
+.avandwp-summary-box,
+.avandwp-article-summary {
+	background: var(--avand-surface-bg);
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	padding: 16px;
+	margin-bottom: 12px;
+}
+
+.avandwp-article-summary h3 {
+	margin: 0 0 8px;
+	font-size: 15px;
+}
+
+.avandwp-job-card {
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	padding: 16px;
+	margin-bottom: 12px;
+	background: #FFFFFF;
+}
+
+.avandwp-job-card h3 {
+	margin: 0 0 10px;
+	font-size: 14px;
+}
+
+.avandwp-loading {
+	font-size: 12px;
+	color: var(--avand-text-muted);
+}
+
+/* Progress: a real percentage, or an honest unknown. */
+.avandwp-progress-wrap {
+	margin: 12px 0;
+}
+
+.avandwp-progress {
+	height: 10px;
+	background: var(--avand-border);
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.avandwp-progress-bar {
+	height: 100%;
+	width: 0;
+	background: var(--avand-primary);
+	border-radius: 999px;
+	transition: width 0.3s ease;
+}
+
+.avandwp-progress-bar.is-indeterminate {
+	width: 40%;
+	background: linear-gradient(90deg, var(--avand-border) 0%, var(--avand-primary) 50%, var(--avand-border) 100%);
+	animation: avandwp-indeterminate 1.4s linear infinite;
+}
+
+@keyframes avandwp-indeterminate {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(250%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.avandwp-progress-bar.is-indeterminate {
+		animation: none;
+		width: 100%;
+		opacity: 0.5;
+	}
+}
+
+.avandwp-progress-text {
+	margin: 6px 0 0;
+	font-size: 12px;
+	color: var(--avand-text-secondary);
+}
+
+/* Scores and profiles */
+.avandwp-score-card {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 12px 16px;
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	background: var(--avand-surface-bg);
+	margin: 0 0 0 8px;
+}
+
+.avandwp-score-value {
+	font-size: 24px;
+	font-weight: 800;
+	line-height: 1.2;
+	color: var(--avand-text-primary);
+}
+
+.avandwp-profile-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.avandwp-profile {
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	padding: 12px 14px;
+	background: #FFFFFF;
+}
+
+.avandwp-stat-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin: 10px 0;
+}
+
+.avandwp-table-wrap {
+	overflow-x: auto;
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+}
+
+.avandwp-table-wrap table {
+	margin: 0;
+	border: 0;
+}
+
+/* Links, URLs and destructive-affordance helpers */
+.avandwp-url,
+.avandwp-link {
+	direction: ltr;
+	unicode-bidi: embed;
+	word-break: break-all;
+	font-size: 12px;
+	color: var(--avand-text-muted);
+}
+
+.avandwp-apply-link,
+.avandwp-revert-link,
+.avandwp-audit-download {
+	margin-inline-end: 6px;
+}
+
+.avandwp-clear-key {
+	margin-top: 10px;
+	padding: 10px 12px;
+	background: var(--avand-danger-bg);
+	border: 1px solid #FECACA;
+	border-radius: var(--avand-radius-control);
+	color: var(--avand-danger-text);
+}
+
+.avandwp-danger-check {
+	padding: 10px 12px;
+	border: 1px solid #FDE68A;
+	border-radius: var(--avand-radius-control);
+	background: var(--avand-warning-bg);
+	color: var(--avand-warning-text);
+}
+
+.avandwp-details {
+	margin: 10px 0;
+	font-size: 12px;
+}
+
+.avandwp-details summary {
+	cursor: pointer;
+	font-weight: 600;
+	color: var(--avand-text-secondary);
+}
+
+.avandwp-onboarding-card {
+	border: 1px dashed var(--avand-border);
+}
+
+/* Container hooks on the WooCommerce, support and automation screens. Most of
+ * these carry WordPress core button styles already; only layout and field
+ * affordances are added here. */
+.avandwp-header-actions,
+.avandwp-row-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+.avandwp-ticket-action-box,
+.avandwp-transcript-box {
+	background: var(--avand-surface-bg);
+	border: 1px solid var(--avand-border);
+	border-radius: var(--avand-radius-control);
+	padding: 12px 14px;
+	margin: 10px 0;
+	font-size: 12px;
+}
+
+.avandwp-ticket-status {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--avand-text-secondary);
+}
+
+.avandwp-ticket-reply {
+	width: 100%;
+	min-height: 90px;
+	border: 1px solid #CBD5E1;
+	border-radius: var(--avand-radius-control);
+	padding: 8px 12px;
+	font-size: 13px;
+}
+
+.avandwp-woo-item-cb,
+.avandwp-woo-opt-single {
+	accent-color: var(--avand-primary);
+	width: 16px;
+	height: 16px;
+}
+
+@media print {
+	.avandwp-progress-bar.is-indeterminate {
+		animation: none;
+	}
+	#adminmenumain,
+	#wpadminbar,
+	.avandwp-main-nav,
+	.avandwp-tabs,
+	.avandwp-btn {
+		display: none !important;
+	}
+	#wpcontent {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+}

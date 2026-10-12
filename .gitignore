@@ -1,0 +1,4 @@
+# Development tooling (never shipped in the release ZIP)
+node_modules/
+build/
+.DS_Store
