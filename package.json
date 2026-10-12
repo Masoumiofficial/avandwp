@@ -1,0 +1,16 @@
+{
+  "name": "avandwp-dev-tooling",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Development-only tooling for AvandWP. Not shipped in the plugin ZIP.",
+  "type": "module",
+  "scripts": {
+    "lint": "node tools/lint.mjs",
+    "test": "node tools/run-tests.mjs",
+    "verify": "node tools/lint.mjs && node tools/run-tests.mjs",
+    "dist": "node tools/build-dist.mjs"
+  },
+  "devDependencies": {
+    "php-wasm": "0.2.0"
+  }
+}
