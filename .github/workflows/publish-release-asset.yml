@@ -1,0 +1,116 @@
+# Publishes the installable plugin ZIP as a GitHub Release asset.
+#
+# This workflow exists because release assets can only be uploaded to
+# uploads.github.com, which is not reachable from every build environment.
+# GitHub's own runners can reach it, so the upload happens here.
+#
+# The archive is rebuilt from the tagged commit -- never from this branch -- and
+# is uploaded only when every acceptance value matches the published checksum.
+# A mismatch means the source moved, so nothing is published and the job fails.
+name: Publish release asset
+
+on:
+  push:
+    branches:
+      - arena/6a2d69a5-avandwp
+  workflow_dispatch:
+
+env:
+  TAG: 2.0.0-alpha.1
+  EXPECTED_SHA256: d0e02703598e91882226e1f3286325e094de194c8c6580d17a1b646536a2f5b6
+  EXPECTED_BYTES: "896552"
+  EXPECTED_FILES: "55"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-release-asset-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-verify-upload:
+    name: Build, verify checksum, upload asset
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the tagged release source
+        uses: actions/checkout@v4
+        with:
+          ref: 2.0.0-alpha.1
+          fetch-depth: 1
+
+      - name: Assert the checkout is the expected commit
+        run: |
+          set -euo pipefail
+          HEAD_SHA="$(git rev-parse HEAD)"
+          echo "Checked out: $HEAD_SHA"
+          if [ "$HEAD_SHA" != "9118588badb7507492662b105e1f02565ec5379d" ]; then
+            echo "::error::tag $TAG no longer points at 9118588; refusing to build"
+            exit 1
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install development tooling
+        run: npm ci
+
+      - name: Verify (lint + unit suite)
+        run: npm run verify
+
+      - name: Build the distribution archive
+        run: npm run dist
+
+      - name: Gate on the published checksum
+        run: |
+          set -euo pipefail
+          ZIP="build/avandwp-${TAG}.zip"
+          MANIFEST="build/avandwp-${TAG}.manifest.json"
+
+          ACTUAL_SHA256="$(sha256sum "$ZIP" | awk '{print $1}')"
+          ACTUAL_BYTES="$(stat -c %s "$ZIP")"
+          ACTUAL_FILES="$(node -p "JSON.parse(require('fs').readFileSync('$MANIFEST','utf8')).entry_count")"
+
+          echo "files    expected=$EXPECTED_FILES    actual=$ACTUAL_FILES"
+          echo "bytes    expected=$EXPECTED_BYTES    actual=$ACTUAL_BYTES"
+          echo "sha256   expected=$EXPECTED_SHA256"
+          echo "sha256   actual  =$ACTUAL_SHA256"
+
+          FAIL=0
+          [ "$ACTUAL_SHA256" = "$EXPECTED_SHA256" ] || { echo "::error::SHA-256 mismatch"; FAIL=1; }
+          [ "$ACTUAL_BYTES" = "$EXPECTED_BYTES" ] || { echo "::error::byte size mismatch"; FAIL=1; }
+          [ "$ACTUAL_FILES" = "$EXPECTED_FILES" ] || { echo "::error::file count mismatch"; FAIL=1; }
+
+          if [ "$FAIL" -ne 0 ]; then
+            echo "::error::archive does not match the published checksum; nothing was uploaded"
+            exit 1
+          fi
+          echo "Archive matches the published checksum."
+
+      - name: Upload the asset to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "$TAG" "build/avandwp-${TAG}.zip" --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Download the published asset and re-check the checksum
+        run: |
+          set -euo pipefail
+          URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/avandwp-${TAG}.zip"
+          echo "Fetching $URL"
+          curl -fsSL -o /tmp/downloaded.zip "$URL"
+          ACTUAL_SHA256="$(sha256sum /tmp/downloaded.zip | awk '{print $1}')"
+          ACTUAL_BYTES="$(stat -c %s /tmp/downloaded.zip)"
+          echo "downloaded bytes=$ACTUAL_BYTES sha256=$ACTUAL_SHA256"
+          if [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo "::error::downloaded asset checksum does not match"
+            exit 1
+          fi
+          if [ "$ACTUAL_BYTES" != "$EXPECTED_BYTES" ]; then
+            echo "::error::downloaded asset size does not match"
+            exit 1
+          fi
+          echo "PUBLISHED_URL=$URL" >> "$GITHUB_ENV"
+          echo "Round-trip verified: $URL"
