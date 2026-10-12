@@ -1,6 +1,6 @@
 # AvandWP — Security & Privacy Review
 
-**Version:** 2.0.0-alpha.1 · **Date:** 2026-10-12
+**Version:** 2.0.0 · **Date:** 2026-10-12
 **Method:** source review of every file in `includes/` plus the static policies in
 `tools/lint.mjs` and the executable assertions in `tests/test-security-and-cost.php`.
 

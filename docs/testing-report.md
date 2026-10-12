@@ -1,6 +1,6 @@
 # AvandWP — Testing Report
 
-**Version under test:** 2.0.0-alpha.1 · **Date:** 2026-10-12
+**Version under test:** 2.0.0 · **Date:** 2026-10-12
 **Toolchain:** Node 22 · `php-wasm` PHP **8.2.11** · no Composer, no PHPUnit, no WordPress runtime, no network
 
 ---
