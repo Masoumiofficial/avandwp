@@ -98,6 +98,96 @@ AvandWP_Test_Harness::test(
 );
 
 AvandWP_Test_Harness::test(
+	'the section count a brief implies is proportional and bounded',
+	static function () {
+		// 4,500 words at ~700 words per section.
+		AvandWP_Test_Harness::assert_same(
+			7,
+			AvandWP_Longform_Generator::target_sections( array( 'length_target' => 4500, 'length_mode' => 'words' ) )
+		);
+
+		// A very short brief still gets a usable plan, never fewer than 3.
+		AvandWP_Test_Harness::assert_same(
+			3,
+			AvandWP_Longform_Generator::target_sections( array( 'length_target' => 500, 'length_mode' => 'words' ) )
+		);
+
+		// A very long brief is clamped at MAX_SECTIONS, not left to the model.
+		AvandWP_Test_Harness::assert_same(
+			20,
+			AvandWP_Longform_Generator::target_sections( array( 'length_target' => 30000, 'length_mode' => 'words' ) )
+		);
+
+		// Character mode converts at ~6 characters per word (spaces counted).
+		AvandWP_Test_Harness::assert_same(
+			5,
+			AvandWP_Longform_Generator::target_sections( array( 'length_target' => 18000, 'length_mode' => 'characters' ) )
+		);
+	}
+);
+
+AvandWP_Test_Harness::test(
+	'the outline budget covers the plan the prompt asks for, instead of a fixed cap',
+	static function () {
+		// One section entry exactly as the outline prompt specifies it.
+		$section = array(
+			'heading'        => 'راهکار عملی برای بهبود نرخ تبدیل فروشگاه اینترنتی',
+			'purpose'        => 'این بخش نشان می‌دهد چطور با ابزارهای در دسترس نرخ تبدیل را بالا ببریم و چه شاخص‌هایی را اندازه بگیریم.',
+			'subheadings'    => array( 'ابزارهای موردنیاز و هزینه تقریبی', 'گام‌های اجرایی هفته به هفته', 'اشتباه‌های پرتکرار تیم‌های کوچک' ),
+			'keywords'       => array( 'نرخ تبدیل', 'بهینه‌سازی فروشگاه', 'تحلیل رفتار کاربر' ),
+			'target_words'   => 640,
+			'required_facts' => array( 'میانگین نرخ تبدیل فروشگاه‌های ایرانی بین ۱ تا ۲ درصد گزارش می‌شود', 'هزینه ابزارها به تومان و با بازه تقریبی ذکر شود' ),
+		);
+
+		foreach ( array( 7, 20 ) as $sections ) {
+			$outline = array(
+				'seo_title'             => 'راهنمای جامع بهبود نرخ تبدیل فروشگاه اینترنتی در ۹۰ روز',
+				'meta_description'      => 'در این راهنمای عملی گام‌به‌گام نشان می‌دهیم چطور نرخ تبدیل فروشگاه اینترنتی را در سه ماه بالا ببرید.',
+				'slug_hint'             => 'improve-ecommerce-conversion-rate',
+				'search_intent_summary' => 'کاربر به دنبال یک برنامه اجرایی و زمان‌بندی‌شده برای افزایش فروش است.',
+				'key_questions'         => array( 'نرخ تبدیل خوب چند درصد است؟', 'کدام صفحه‌ها بیشترین اثر را دارند؟' ),
+				'entities'              => array( 'نرخ تبدیل', 'صفحه محصول', 'درگاه پرداخت' ),
+				'sections'              => array_fill( 0, $sections, $section ),
+				'faq'                   => array(
+					array(
+						'question' => 'بهبود نرخ تبدیل چقدر طول می‌کشد؟',
+						'answer'   => 'معمولاً بین ۶ تا ۱۲ هفته طول می‌کشد تا اثر تغییرات در داده‌ها دیده شود.',
+					),
+				),
+				'image_prompt'          => 'A clean editorial illustration of an online store dashboard',
+				'inline_image_prompts'  => array(
+					array( 'after_section' => 2, 'prompt' => 'A simple funnel diagram', 'alt' => 'نمودار قیف فروش' ),
+				),
+			);
+
+			// A provider returns unescaped UTF-8, so measure it that way.
+			$json   = (string) json_encode( $outline, JSON_UNESCAPED_UNICODE );
+			$needed = AvandWP_Text_Helper::estimate_tokens( $json );
+			$budget = AvandWP_Longform_Generator::outline_budget( $sections );
+
+			AvandWP_Test_Harness::assert_true(
+				$budget >= $needed,
+				sprintf( '%d sections need ~%d tokens but the outline budget is %d', $sections, $needed, $budget )
+			);
+		}
+
+		// The budget grows with the plan, never shrinks, and respects the hard cap.
+		AvandWP_Test_Harness::assert_true(
+			AvandWP_Longform_Generator::outline_budget( 20 ) > AvandWP_Longform_Generator::outline_budget( 7 ),
+			'a wider plan receives a larger budget'
+		);
+		AvandWP_Test_Harness::assert_true(
+			AvandWP_Longform_Generator::outline_budget( 3 ) >= 2400,
+			'the smallest plan still gets the historical 2,400-token floor'
+		);
+		AvandWP_Test_Harness::assert_true(
+			AvandWP_Longform_Generator::outline_budget( 999 ) <= AvandWP_AI_Client::HARD_MAX_OUTPUT_TOKENS,
+			'the budget never exceeds the provider ceiling'
+		);
+	}
+);
+
+AvandWP_Test_Harness::test(
 	'long-form honours the default length and the published bounds',
 	static function () {
 		$defaults = AvandWP_Activator::default_settings();

@@ -316,6 +316,51 @@ class AvandWP_Longform_Generator {
 		return max( 6, $cap );
 	}
 
+	/**
+	 * Section count a brief implies.
+	 *
+	 * The same 700-words-per-section figure `request_budget()` uses, clamped to
+	 * the range the outline stage can actually handle.
+	 *
+	 * @param array $brief Brief.
+	 * @return int
+	 */
+	public static function target_sections( array $brief ) {
+		$mode   = ( 'characters' === ( $brief['length_mode'] ?? 'words' ) ) ? 'characters' : 'words';
+		$spaces = ! array_key_exists( 'length_include_spaces', $brief ) || ! empty( $brief['length_include_spaces'] );
+		$target = max( 1, (int) ( $brief['length_target'] ?? AvandWP_Article_Brief::DEFAULT_LENGTH ) );
+
+		$words = ( 'words' === $mode )
+			? $target
+			: (int) ceil( $target / ( $spaces ? 6 : 5 ) );
+
+		return max( 3, min( self::MAX_SECTIONS, (int) ceil( $words / 700 ) ) );
+	}
+
+	/**
+	 * Output budget for the outline request.
+	 *
+	 * The outline is one JSON object, so its size grows with the section count:
+	 * a fixed cap that fits a five-section plan truncates a twelve-section one,
+	 * and a truncated outline is not decodable JSON. Every other stage already
+	 * derives its budget from the brief; this one has to as well.
+	 *
+	 * The per-section allowance carries headroom over the measured cost of a
+	 * section entry (heading, purpose, subheadings, keywords and required facts
+	 * in Persian, measured at roughly 310 tokens).
+	 *
+	 * @param int $sections Expected section count.
+	 * @return int
+	 */
+	public static function outline_budget( $sections ) {
+		$sections = max( 3, min( self::MAX_SECTIONS, (int) $sections ) );
+
+		return (int) min(
+			AvandWP_AI_Client::HARD_MAX_OUTPUT_TOKENS,
+			max( 2400, 1200 + ( $sections * 420 ) )
+		);
+	}
+
 	// ---------------------------------------------------------------------
 	// Planning
 	// ---------------------------------------------------------------------
@@ -332,16 +377,23 @@ class AvandWP_Longform_Generator {
 
 		$system = 'تو یک برنامه‌ریز محتوای فارسی هستی. فقط یک شیء JSON معتبر برگردان و هیچ متن دیگری ننویس.';
 
+		// The plan is sized before it is requested: the prompt asks for a
+		// specific section count and the request is given enough output budget
+		// for that many entries. Asking for "3 to 20 sections" inside a fixed
+		// token cap let the model return a plan too wide to finish.
+		$target_sections = self::target_sections( $brief );
+
 		$user = sprintf(
-			"برای مقاله‌ای با این مشخصات، ساختار بخش‌ها را طراحی کن:\n\n%s\n\n%s\n\nخروجی JSON با این کلیدها:\n{\n  \"seo_title\": \"عنوان سئو حداکثر ۶۰ کاراکتر شامل کلمه کلیدی کانونی\",\n  \"meta_description\": \"توضیحات متا ۱۲۰ تا ۱۵۵ کاراکتر\",\n  \"slug_hint\": \"نامک پیشنهادی لاتین با خط تیره\",\n  \"search_intent_summary\": \"جمله‌ای درباره اینکه کاربر دنبال چه چیزی است\",\n  \"key_questions\": [\"پرسش‌هایی که مقاله باید قطعی پاسخ دهد\"],\n  \"entities\": [\"نهادها، برندها و اصطلاحاتی که باید در متن بیایند\"],\n  \"sections\": [\n    {\n      \"heading\": \"عنوان H2\",\n      \"purpose\": \"این بخش دقیقاً چه چیزی را حل می‌کند\",\n      \"subheadings\": [\"عنوان H3\"],\n      \"keywords\": [\"کلیدواژه‌های فرعی همین بخش\"],\n      \"target_words\": 500,\n      \"required_facts\": [\"داده یا نکته‌ای که حتماً باید ذکر شود\"]\n    }\n  ],\n  \"faq\": [{\"question\": \"...\", \"answer\": \"...\"}],\n  \"image_prompt\": \"English editorial image prompt\",\n  \"inline_image_prompts\": [{\"after_section\": 2, \"prompt\": \"...\", \"alt\": \"متن جانشین فارسی\"}]\n}\n\nقواعد:\n- مجموع target_words بخش‌ها باید حدود %d %s باشد.\n- تعداد بخش‌ها بین ۳ تا %d باشد.\n- هیچ بخشی نباید مقدمه یا نتیجه‌گیری ساده باشد؛ هر بخش باید ارزش مستقل داشته باشد.\n- از تکرار یک جمله یا پاراگراف در بخش‌های مختلف پرهیز کن.",
+			"برای مقاله‌ای با این مشخصات، ساختار بخش‌ها را طراحی کن:\n\n%s\n\n%s\n\nخروجی JSON با این کلیدها:\n{\n  \"seo_title\": \"عنوان سئو حداکثر ۶۰ کاراکتر شامل کلمه کلیدی کانونی\",\n  \"meta_description\": \"توضیحات متا ۱۲۰ تا ۱۵۵ کاراکتر\",\n  \"slug_hint\": \"نامک پیشنهادی لاتین با خط تیره\",\n  \"search_intent_summary\": \"جمله‌ای درباره اینکه کاربر دنبال چه چیزی است\",\n  \"key_questions\": [\"پرسش‌هایی که مقاله باید قطعی پاسخ دهد\"],\n  \"entities\": [\"نهادها، برندها و اصطلاحاتی که باید در متن بیایند\"],\n  \"sections\": [\n    {\n      \"heading\": \"عنوان H2\",\n      \"purpose\": \"این بخش دقیقاً چه چیزی را حل می‌کند\",\n      \"subheadings\": [\"عنوان H3\"],\n      \"keywords\": [\"کلیدواژه‌های فرعی همین بخش\"],\n      \"target_words\": 500,\n      \"required_facts\": [\"داده یا نکته‌ای که حتماً باید ذکر شود\"]\n    }\n  ],\n  \"faq\": [{\"question\": \"...\", \"answer\": \"...\"}],\n  \"image_prompt\": \"English editorial image prompt\",\n  \"inline_image_prompts\": [{\"after_section\": 2, \"prompt\": \"...\", \"alt\": \"متن جانشین فارسی\"}]\n}\n\nقواعد:\n- مجموع target_words بخش‌ها باید حدود %d %s باشد.\n- تعداد بخش‌ها حدود %d باشد و از %d بیشتر نشود.\n- هیچ بخشی نباید مقدمه یا نتیجه‌گیری ساده باشد؛ هر بخش باید ارزش مستقل داشته باشد.\n- از تکرار یک جمله یا پاراگراف در بخش‌های مختلف پرهیز کن.",
 			AvandWP_Article_Brief::to_prompt_block( $brief ),
 			'' !== ( $state['context_block'] ?? '' ) ? $state['context_block'] : '',
 			(int) $brief['length_target'],
 			'characters' === $brief['length_mode'] ? 'کاراکتر' : 'کلمه',
+			$target_sections,
 			self::MAX_SECTIONS
 		);
 
-		$res = $this->ask( $context, $system, $user, 2400, 'outline' );
+		$res = $this->ask( $context, $system, $user, self::outline_budget( $target_sections ), 'outline' );
 
 		if ( is_wp_error( $res ) ) {
 			return $res;
@@ -350,6 +402,20 @@ class AvandWP_Longform_Generator {
 		$parsed = AvandWP_Text_Helper::parse_json_response( $res['content'] );
 
 		if ( ! is_array( $parsed ) || empty( $parsed['sections'] ) || ! is_array( $parsed['sections'] ) ) {
+			// A cut-off response is not a formatting mistake by the model. Saying
+			// "invalid format" here sends the user to swap models when the actual
+			// cause is that the request ran out of output budget, so the two
+			// cases get separate messages and separate error codes.
+			if ( ! empty( $res['truncated'] ) ) {
+				return new WP_Error(
+					'avandwp_outline_truncated',
+					sprintf(
+						'پاسخ مدل پیش از کامل‌شدن ساختار مقاله بریده شد (finish_reason=%s)، بنابراین JSON برگردانده‌شده معتبر نیست. دوباره تلاش کنید یا طول مقاله را کاهش دهید.',
+						'' !== (string) ( $res['finish_reason'] ?? '' ) ? sanitize_text_field( (string) $res['finish_reason'] ) : 'نامشخص'
+					)
+				);
+			}
+
 			return new WP_Error(
 				'avandwp_outline_failed',
 				'مدل، ساختار مقاله را در قالب معتبر برنگرداند. دوباره تلاش کنید یا مدل قوی‌تری انتخاب کنید.'
