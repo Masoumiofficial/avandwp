@@ -263,9 +263,20 @@ class AvandWP_Provider_Registry {
 	 */
 	public static function default_model( $capability, $provider ) {
 		$settings = get_option( 'avandwp_settings', array() );
-		$slot     = 'model_' . $provider;
 
-		if ( ! empty( $settings[ $slot ] ) ) {
+		// Capability-specific settings come first. The image studio stores its
+		// model in `image_model`; the `model_<provider>` slots hold *text* models
+		// only. Reading the text slot for an image request used to hand a chat
+		// model (`gpt-5.6-terra`) to the image endpoint, which the catalogue
+		// check then rejected — image generation failed on a fresh install even
+		// though the settings screen displayed the correct image model.
+		if ( 'image' === $capability && ! empty( $settings['image_model'] ) ) {
+			return sanitize_text_field( (string) $settings['image_model'] );
+		}
+
+		$slot = 'model_' . $provider;
+
+		if ( 'text' === $capability && ! empty( $settings[ $slot ] ) ) {
 			return sanitize_text_field( (string) $settings[ $slot ] );
 		}
 

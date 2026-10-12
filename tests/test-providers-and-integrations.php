@@ -87,6 +87,40 @@ AvandWP_Test_Harness::test(
 );
 
 AvandWP_Test_Harness::test(
+	'regression: an image request with no explicit model uses the image setting, not the text model',
+	function () {
+		// The image studio form posts only prompt/alt_text/size/provider, so the
+		// registry is reached with an empty $requested and has to fall back to a
+		// default itself. That fallback must be the *image* model: picking up the
+		// text slot instead sends a chat model to an image endpoint, which the
+		// catalogue check then rejects and image generation fails out of the box.
+		$previous = get_option( 'avandwp_settings', array() );
+
+		update_option( 'avandwp_settings', AvandWP_Activator::default_settings() );
+
+		$settings = get_option( 'avandwp_settings' );
+
+		AvandWP_Test_Harness::assert_same( 'gpt-image-2', $settings['image_model'], 'the shipped image default must be an image model' );
+		AvandWP_Test_Harness::assert_same( 'gpt-5.6-terra', $settings['model_gapgpt'], 'the shipped text default is a chat model' );
+
+		$resolved = AvandWP_Provider_Registry::resolve_model( 'image', 'gapgpt', '' );
+
+		AvandWP_Test_Harness::assert_true(
+			! is_wp_error( $resolved ),
+			'image generation must not fail with the shipped defaults'
+				. ( is_wp_error( $resolved ) ? ': ' . $resolved->get_error_message() : '' )
+		);
+
+		if ( ! is_wp_error( $resolved ) ) {
+			AvandWP_Test_Harness::assert_same( 'gpt-image-2', $resolved['model'] );
+			AvandWP_Test_Harness::assert_true( $resolved['verified'] );
+		}
+
+		update_option( 'avandwp_settings', $previous );
+	}
+);
+
+AvandWP_Test_Harness::test(
 	'a text model is never suggested for an image request',
 	function () {
 		$resolved = AvandWP_Provider_Registry::resolve_model( 'image', 'gemini', 'gemini-2.5-flash' );
